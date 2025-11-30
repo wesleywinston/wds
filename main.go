@@ -20,7 +20,18 @@ import (
 // The root route handler
 func homeHandler(w http.ResponseWriter, r *http.Request) {
 	// 1. Use the local types package to create an object
-	sampleUser := types.NewUser("u123", "Wesley", "wesley@example.com")
+	// id, name, email string, passwordHash string, firstName string, lastName string, role string, status string, associatedEntityID string
+	sampleUser := types.NewUser(
+		"53454654gdg3465sdg235",
+		"Brighton Haney",
+		"brighton@friendlymarket.net",
+		"",
+		"Brighton", // take first and last name from fields in the UI, and create a name object combining the two fields. firstName is always 0, lastName is always 1
+		"Haney",
+		"Admin",
+		"Active",
+		"",
+	)
 
 	// 2. Use the local utils package to format a string
 	message := utils.FormatMessage(sampleUser.Name)
