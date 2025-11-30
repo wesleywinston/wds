@@ -7,16 +7,21 @@ type ContactInfo struct {
 	Phone   string `json:"phone"`
 }
 
+type Name struct {
+	FirstName string `json:"firstName"` // FullName.FirstName
+	LastName  string `json:"lastName"`
+}
+
 // User represents a user entity in our system.
 // Fields are exported (capitalized) so they can be accessed
 // and manipulated by other packages like main.
 type User struct {
-	ID                 string `json:"id"`                 // Unique Firestore/Database ID.
-	Name               string `json:"name"`               // Full name of the user.
-	Email              string `json:"email"`              // Email address.
-	PasswordHash       string `json:"passwordHash"`       // Hashed password.
-	FirstName          string `json:"firstName"`          // First name of the user.
-	LastName           string `json:"lastName"`           // Last name of the user.
+	ID           string   `json:"id"`           // Unique Firestore/Database ID.
+	FullName     []string `json:"fullName"`     // Full name of the user.
+	Email        string   `json:"email"`        // Email address.
+	PasswordHash string   `json:"passwordHash"` // Hashed password.
+	// FirstName          string `json:"firstName"`          // First name of the user.
+	// LastName           string `json:"lastName"`           // Last name of the user.
 	Role               string `json:"role"`               // Defines permissions and UI views.
 	Status             string `json:"status"`             // Account status, linked to license validity.
 	AssociatedEntityID string `json:"associatedEntityID"` // Foreign key reference to the Vendor or Buyer document this user belongs to.
@@ -49,14 +54,14 @@ const (
 )
 
 // NewUser is a simple constructor function (exported).
-func NewUser(id, name, email string, passwordHash string, firstName string, lastName string, role string, status string, associatedEntityID string) User {
+func NewUser(id string, fullName []string, email string, passwordHash string, role string, status string, associatedEntityID string) User {
 	return User{
-		ID:                 id,
-		Name:               name,
-		Email:              email,
-		PasswordHash:       passwordHash,
-		FirstName:          firstName,
-		LastName:           lastName,
+		ID:           id,
+		FullName:     fullName,
+		Email:        email,
+		PasswordHash: passwordHash,
+		// FirstName:          firstName,
+		// LastName:           lastName,
 		Role:               role,
 		Status:             status,
 		AssociatedEntityID: associatedEntityID,

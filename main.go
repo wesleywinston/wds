@@ -23,18 +23,18 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 	// id, name, email string, passwordHash string, firstName string, lastName string, role string, status string, associatedEntityID string
 	sampleUser := types.NewUser(
 		"53454654gdg3465sdg235",
-		"Brighton Haney",
+		[]string{"Brighton", "Haney"},
 		"brighton@friendlymarket.net",
 		"",
-		"Brighton", // take first and last name from fields in the UI, and create a name object combining the two fields. firstName is always 0, lastName is always 1
-		"Haney",
+		// "Brighton", // take first and last name from fields in the UI, and create a name object combining the two fields. firstName is always 0, lastName is always 1
+		// "Haney",SS
 		"Admin",
 		"Active",
 		"",
 	)
 
 	// 2. Use the local utils package to format a string
-	message := utils.FormatMessage(sampleUser.Name)
+	message := utils.FormatMessage(sampleUser.FullName)
 
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprintf(w, "%s\nUser ID: %s", message, sampleUser.ID)
