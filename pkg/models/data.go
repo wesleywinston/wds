@@ -1,4 +1,6 @@
-package types
+package models
+
+import "time"
 
 // ContactInfo represents a contact entity in our system.
 type ContactInfo struct {
@@ -46,28 +48,42 @@ type Vendor struct {
 	ID                    string      `json:"id"`
 	BusinessName          string      `json:"businessName"`
 	OKStateLicenseID      string      `json:"okStateLicenseID"`
-	LicenseExpirationDate string      `json:"licenseExpirationDate"`
-	Status                string      `json:"status"`
+	LicenseExpirationDate time.Time   `json:"licenseExpirationDate"`
+	ComplianceStatus      Status      `json:"complianceStatus"`
 	ContactInfo           ContactInfo `json:"contactInfo"`
 	MenuEnabled           bool        `json:"menuEnabled"` // Flag to show/hide the Vendor's products on the marketplace.
+	CreatedAt             time.Time   `json:"createdAt"`
+	// ID, BusinessName, OKStateLicenseID, LicenseExpirationDate, ComplianceStatus, ContactInfo, MenuEnabled, CreatedAt
 	// add a Users[] object that represents the accounts for each business, i.e Easy Street has Wes, Brighton, Chad, etc.
+}
+
+type Buyer struct {
+	ID                    string      `json:"id"`
+	BusinessName          string      `json:"businessName"`
+	OKStateLicenseID      string      `json:"okStateLicenseID"`
+	LicenseExpirationDate time.Time   `json:"licenseExpirationDate"`
+	ComplianceStatus      Status      `json:"complianceStatus"`
+	ContactInfo           ContactInfo `json:"contactInfo"`
+	CreatedAt             time.Time   `json:"createdAt"`
+	// Users                 []User      `json:"users"`
+	// MenuEnabled           bool        `json:"menuEnabled"` // Flag to show/hide the Vendor's products on the marketplace.
 }
 
 type Product struct { // (Represents a single SKU offered by a Vendor)
 	// Must include inventory and specific compliance details.
-	ID               string   `json:"id"`
-	VendorID         string   `json:"vendorID"` // Foreign key to the Vendor document.
-	Name             string   `json:"name"`
-	Description      string   `json:"description"`
-	Category         string   `json:"category"`
-	SubCategory      string   `json:"subCategory"`
-	PricePerUnit     float64  `json:"pricePerUnit"`
-	AvailableUnits   int      `json:"availableUnits"`
-	MinOrderQuantity int      `json:"minOrderQuantity"`
-	MaxOrderQuantity int      `json:"maxOrderQuantity"`
-	CoaLink          string   `json:"coaLink"`
-	ComplianceTags   []string `json:"complianceTags"` // ['THC: 25%', 'Sativa', 'Lab ID: 12345']
-	UpdatedAt        string   `json:"updatedAt"`      // timestamp as a string
+	ID               string    `json:"id"`
+	VendorID         string    `json:"vendorID"` // Foreign key to the Vendor document.
+	Name             string    `json:"name"`
+	Description      string    `json:"description"`
+	Category         string    `json:"category"`
+	SubCategory      string    `json:"subCategory"`
+	PricePerUnit     float64   `json:"pricePerUnit"`
+	AvailableUnits   int       `json:"availableUnits"`
+	MinOrderQuantity int       `json:"minOrderQuantity"`
+	MaxOrderQuantity int       `json:"maxOrderQuantity"`
+	CoaLink          string    `json:"coaLink"`
+	ComplianceTags   []string  `json:"complianceTags"` // ['THC: 25%', 'Sativa', 'Lab ID: 12345']
+	UpdatedAt        time.Time `json:"updatedAt"`      // timestamp as a string
 	// Stock            int      `json:"stock"`
 }
 
@@ -92,8 +108,18 @@ type Order struct {
 	UpdatedAt    string `json:"updatedAt"`    // timestamp as a string
 }
 
+// --- Helper Struct for External API Response ---
+
+// OMMAVerificationResponse simulates the data returned from an external compliance API.
+type OMMAVerificationResponse struct {
+	LicenseID      string    `json:"license_id"`
+	IsActive       bool      `json:"is_active"`
+	ExpirationDate time.Time `json:"expiration_date"`
+	EntityType     string    `json:"entity_type"` // e.g., "Grower", "Dispensary", "Processor
+}
+
 type Role string
-type Status string
+type Status string // compliance status of business
 type OrderStatus string
 type PaymentStatus string // Tracks B2B payment status.
 type PaymentMethod string // Tracks B2B payment method.
@@ -131,18 +157,3 @@ const (
 	PaymentMethodCheck PaymentMethod = "CHECK"
 	PaymentMethodOther PaymentMethod = "OTHER" // crypto ??
 )
-
-// NewUser is a simple constructor function (exported).
-func NewUser(id string, fullName []string, email string, passwordHash string, role string, status string, associatedEntityID string) User {
-	return User{
-		ID:           id,
-		FullName:     fullName,
-		Email:        email,
-		PasswordHash: passwordHash,
-		// FirstName:          firstName,
-		// LastName:           lastName,
-		Role:               role,
-		Status:             status,
-		AssociatedEntityID: associatedEntityID,
-	}
-}

@@ -11,7 +11,8 @@ import (
 	// -----------------------------------------------------------
 	// "github.com/wes-and-me/api-server-project/pkg/types"
 	// "github.com/wes-and-me/api-server-project/pkg/utils"
-	"github.com/wesleywinston/wds/pkg/types"
+	// "github.com/wesleywinston/wds/pkg/models"
+	"github.com/wesleywinston/wds/pkg/models"
 	"github.com/wesleywinston/wds/pkg/utils"
 
 	"github.com/gorilla/mux"
@@ -21,7 +22,7 @@ import (
 func homeHandler(w http.ResponseWriter, r *http.Request) {
 	// 1. Use the local types package to create an object
 	// id, name, email string, passwordHash string, firstName string, lastName string, role string, status string, associatedEntityID string
-	sampleUser := types.NewUser(
+	sampleUser := models.NewUser(
 		"53454654gdg3465sdg235",
 		[]string{"Brighton", "Haney"},
 		"brighton@friendlymarket.net",

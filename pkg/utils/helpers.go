@@ -1,6 +1,8 @@
 package utils
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // FormatMessage takes a name and returns a formatted greeting string.
 // Note: Function must be capitalized (exported) to be used outside the package.
