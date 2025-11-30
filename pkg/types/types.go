@@ -12,6 +12,21 @@ type Name struct {
 	LastName  string `json:"lastName"`
 }
 
+type OrderItem struct {
+	ProductID string  `json:"productID"` // Foreign key to the Product document.
+	Quantity  int     `json:"quantity"`
+	Price     float64 `json:"price"` // Unit price at time of order (to account for price changes, promos. and deals)
+}
+
+type Timeline struct {
+	PlacedAt    string `json:"placedAt"`
+	AcceptedAt  string `json:"acceptedAt"`
+	ShippedAt   string `json:"shippedAt"`
+	DeliveredAt string `json:"deliveredAt"`
+	CancelledAt string `json:"cancelledAt"`
+	CompletedAt string `json:"completedAt"`
+}
+
 // User represents a user entity in our system.
 // Fields are exported (capitalized) so they can be accessed
 // and manipulated by other packages like main.
@@ -38,8 +53,50 @@ type Vendor struct {
 	// add a Users[] object that represents the accounts for each business, i.e Easy Street has Wes, Brighton, Chad, etc.
 }
 
+type Product struct { // (Represents a single SKU offered by a Vendor)
+	// Must include inventory and specific compliance details.
+	ID               string   `json:"id"`
+	VendorID         string   `json:"vendorID"` // Foreign key to the Vendor document.
+	Name             string   `json:"name"`
+	Description      string   `json:"description"`
+	Category         string   `json:"category"`
+	SubCategory      string   `json:"subCategory"`
+	PricePerUnit     float64  `json:"pricePerUnit"`
+	AvailableUnits   int      `json:"availableUnits"`
+	MinOrderQuantity int      `json:"minOrderQuantity"`
+	MaxOrderQuantity int      `json:"maxOrderQuantity"`
+	CoaLink          string   `json:"coaLink"`
+	ComplianceTags   []string `json:"complianceTags"` // ['THC: 25%', 'Sativa', 'Lab ID: 12345']
+	UpdatedAt        string   `json:"updatedAt"`      // timestamp as a string
+	// Stock            int      `json:"stock"`
+}
+
+type Order struct {
+	ID                  string      `json:"id"`
+	BuyerID             string      `json:"buyerID"`  // Foreign key to the User document.
+	VendorID            string      `json:"vendorID"` // Foreign key to the Vendor document.
+	Status              string      `json:"status"`   // originates from type OrderStatus (PENDING, ACCEPTED, PROCESSING, SHIPPED, DELIVERED, CANCELLED, COMPLETED)
+	OrderStatusTimeline Timeline    `json:"orderStatusTimeline"`
+	Items               []OrderItem `json:"items"`
+	SubTotal            float64     `json:"subTotal"`      // sum of all line items
+	ExciseTax           float64     `json:"exciseTax"`     // sum of all line items * excise tax rate
+	SalesTax            float64     `json:"salesTax"`      // sum of all line items * sales tax rate
+	TotalPrice          float64     `json:"totalPrice"`    // sum of all line items + excise tax + sales tax
+	PaymentStatus       string      `json:"paymentStatus"` // 'PENDING', 'PAID', 'REFUNDED'
+	PaymentMethod       string      `json:"paymentMethod"` // 'CASH', 'CREDIT_CARD', 'DEBIT_CARD', 'CHECK', 'OTHER'
+	ShippingAddress     string      `json:"shippingAddress"`
+	ShippingCost        float64     `json:"shippingCost"`
+	// PlacedAt            string      `json:"placedAt"` // timestamp as a string
+	// placedAt, acceptedAt, shippedAt, deliveredAt, cancelledAt, completedAt
+	DeliveryDate string `json:"deliveryDate"` // Scheduled delivery date or pickup
+	UpdatedAt    string `json:"updatedAt"`    // timestamp as a string
+}
+
 type Role string
 type Status string
+type OrderStatus string
+type PaymentStatus string // Tracks B2B payment status.
+type PaymentMethod string // Tracks B2B payment method.
 
 const (
 	RoleAdmin  Role = "ADMIN"
@@ -51,6 +108,28 @@ const (
 	StatusPending  Status = "PENDING_APPROVAL"
 	StatusActive   Status = "ACTIVE"
 	StatusInactive Status = "INACTIVE"
+)
+
+const (
+	OrderStatusPending    OrderStatus = "PENDING"
+	OrderStatusAccepted   OrderStatus = "ACCEPTED"
+	OrderStatusProcessing OrderStatus = "PROCESSING"
+	OrderStatusShipped    OrderStatus = "SHIPPED"
+	OrderStatusDelivered  OrderStatus = "DELIVERED"
+	OrderStatusCancelled  OrderStatus = "CANCELLED"
+	OrderStatusCompleted  OrderStatus = "COMPLETED"
+)
+
+const (
+	PaymentStatusPending  PaymentStatus = "PENDING"
+	PaymentStatusPaid     PaymentStatus = "PAID"
+	PaymentStatusRefunded PaymentStatus = "REFUNDED"
+)
+
+const (
+	PaymentMethodCash  PaymentMethod = "CASH"
+	PaymentMethodCheck PaymentMethod = "CHECK"
+	PaymentMethodOther PaymentMethod = "OTHER" // crypto ??
 )
 
 // NewUser is a simple constructor function (exported).
