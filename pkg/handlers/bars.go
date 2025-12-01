@@ -77,23 +77,28 @@ func CheckEntityActive(db *firestore.Client, entityID string) error {
 
 	// --- STEP 1: Retrieve Vendor/Buyer data from our DB ---
 	// For simplicity, we assume we fetch a Vendor here, but this logic would be dynamic based on role.
-	var entity models.Vendor // check direct reference of call to this function from user input
+	var entity models.User // check direct reference of call to this function from user input
 
 	// Simulated database retrieval: Fetch the Vendor based on the entityID
 	// In reality: docSnap, err := db.Collection("vendors").Doc(entityID).Get(ctx)
 	// For simulation, we assume retrieval succeeded with known good data:
 	if entityID == "V-12345" {
-		entity.ComplianceStatus = "VERIFIED"
+		entity.AccountData.ComplianceStatus = "VERIFIED"
 		// Set expiration 1 year from now
-		entity.LicenseExpirationDate = time.Now().AddDate(1, 0, 0)
+		entity.AccountData.LicenseExpirationDate = time.Now().AddDate(1, 0, 0)
 	} else {
 		// Simulate expired/bad data
-		entity.ComplianceStatus = "EXPIRED"
-		entity.LicenseExpirationDate = time.Now().AddDate(-1, 0, 0)
+		entity.AccountData.ComplianceStatus = "EXPIRED"
+		entity.AccountData.LicenseExpirationDate = time.Now().AddDate(-1, 0, 0)
 	}
 
 	// --- STEP 2: Internal Compliance Check ---
-	err := services.CheckInternalLicenseStatus(entityID, entity.LicenseExpirationDate, entity.ComplianceStatus)
+	err := services.CheckInternalLicenseStatus(entityID, entity.AccountData.LicenseExpirationDate, entity.AccountData.ComplianceStatus) // this might need to be updated to entity.AccountData.(Vendor/Buyer)
+	// if buy, ok := buyerUser.AccountData.(Buyer); ok {
+	// 	if buy.ComplianceStatus != "VERIFIED" {
+	// 		return errors.New("buyer account is not verified")
+	// 	}
+	// }
 	if err != nil {
 		// Log the failure for administrative review
 		log.Printf("Transactional license check failed for entity %s: %v", entityID, err)

@@ -1,7 +1,7 @@
 package models
 
 // NewUser is a simple constructor function (exported).
-func NewUser(id string, fullName []string, email string, passwordHash string, role string, status string, associatedEntityID string) User {
+func NewUser(id string, fullName []string, email string, passwordHash string, role string, status string, accountData AccountEntity, associatedEntityID string) User {
 	return User{
 		ID:           id,
 		FullName:     fullName,
@@ -9,8 +9,9 @@ func NewUser(id string, fullName []string, email string, passwordHash string, ro
 		PasswordHash: passwordHash,
 		// FirstName:          firstName,
 		// LastName:           lastName,
-		Role:               role,
-		Status:             status,
+		Role:               UserRole(role),
+		Status:             AccountStatus(status),
+		AccountData:        accountData,
 		AssociatedEntityID: associatedEntityID,
 	}
 }

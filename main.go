@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	// -----------------------------------------------------------
 	// IMPORTANT: Local imports use the full module path
@@ -20,10 +21,29 @@ import (
 
 // The root route handler
 func homeHandler(w http.ResponseWriter, r *http.Request) {
-	// 1. Use the local types package to create an object
+	// 1. Create a Vendor entity
+	// Buyer is derived from the license type. Vendor is derived from the license type.
+	// User ID and vendorID are seperately generated.
+	vendorEntity := models.Vendor{
+		ID:                    "vendor_213",
+		BusinessName:          "Green Harvest Farms",
+		OKStateLicenseID:      "PAAA-DJ3F-28JJ-283H",
+		LicenseExpirationDate: time.Now().AddDate(0, 3, 0), // Expires in 3 months
+		Status:                "",
+		ComplianceStatus:      "VERIFIED",
+		ContactInfo: models.ContactInfo{
+			FullName: []string{"Brighton", "Haney"},
+			Address:  "123 Main St.",
+			Email:    "brighton@friendlymarket.net",
+			Phone:    "555-555-5555",
+		},
+		// GrowerLicenseType: "Tier 2",
+	}
+
+	// 2. Use the local types package to create an object
 	// id, name, email string, passwordHash string, firstName string, lastName string, role string, status string, associatedEntityID string
 	sampleUser := models.NewUser(
-		"53454654gdg3465sdg235",
+		"user_23473247234",
 		[]string{"Brighton", "Haney"},
 		"brighton@friendlymarket.net",
 		"",
@@ -31,7 +51,8 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 		// "Haney",SS
 		"Admin",
 		"Active",
-		"",
+		vendorEntity, // AccountEntity // account data
+		"",           // AssociatedEntityID
 	)
 
 	// 2. Use the local utils package to format a string

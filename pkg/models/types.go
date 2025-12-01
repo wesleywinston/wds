@@ -73,9 +73,10 @@ func (b Buyer) String() string {
 
 // ContactInfo represents a contact entity in our system.
 type ContactInfo struct {
-	Address string `json:"address"`
-	Email   string `json:"email"`
-	Phone   string `json:"phone"`
+	FullName []string `json:"fullName"`
+	Address  string   `json:"address"`
+	Email    string   `json:"email"`
+	Phone    string   `json:"phone"`
 }
 
 type Name struct {
