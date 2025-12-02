@@ -2,6 +2,7 @@ package models
 
 import "time"
 
+// each vendor will have a Catalog
 // Catalog represents a collection of products, often filtered by a Buyer's needs
 // or a Vendor's offerings. This is more of a logical view container.
 type Catalog struct {
@@ -18,6 +19,7 @@ type Product struct { // (Represents a single SKU offered by a Vendor)
 	Description      string    `json:"description"`
 	Category         string    `json:"category"`
 	SubCategory      string    `json:"subCategory"`
+	IsMedical        bool	   `json:"isMedical"`
 	PricePerUnit     float64   `json:"pricePerUnit"`
 	AvailableUnits   int       `json:"availableUnits"`
 	MinOrderQuantity int       `json:"minOrderQuantity"`

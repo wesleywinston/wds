@@ -28,9 +28,23 @@ type Vendor struct {
 	ContactInfo           ContactInfo             `json:"contactInfo"`
 	MenuEnabled           bool                    `json:"menuEnabled"` // Flag to show/hide the Vendor's products on the marketplace.
 	CreatedAt             time.Time               `json:"createdAt"`
+	VendorCatalog		  Catalog				  `json:"catalog"`
 	// ID, BusinessName, OKStateLicenseID, LicenseExpirationDate, ComplianceStatus, ContactInfo, MenuEnabled, CreatedAt
 	// add a Users[] object that represents the accounts for each business, i.e Easy Street has Wes, Brighton, Chad, etc.
 }
+
+//
+// {
+	// {
+		// "Blue Dream",
+		// "item_32489348": {
+
+		// }
+	// }
+
+	// }
+// }
+//
 
 type Buyer struct {
 	ID                    string                  `json:"id"`

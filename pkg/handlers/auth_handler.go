@@ -25,7 +25,7 @@ type NewUserRequest struct {
 // CheckEntityCompliance ensures the referenced Vendor/Buyer entity is valid and active.
 // In a real app, this would query the DB for the entity and check its ComplianceStatus.
 func CheckEntityCompliance(ctx context.Context, db *firestore.Client, entityID string, role string) error {
-	if entityID == "" && (role == models.User || role == models.RoleBuyer) {
+	if entityID == "" && (role == "VENDOR" || role == "BUYER") {
 		return errors.New("missing associated entity ID for licensed role")
 	}
 
@@ -59,13 +59,13 @@ func CreateUser(db *firestore.Client) http.HandlerFunc {
 		// For now, we only allow specific IDs to simulate compliance.
 		//
 		//	ADMIN, BUYER, VENDOR
-		if req.Role == models.Vendor || req.Role == models.Buyer {
+		if req.Role == "VENDOR" || req.Role == "BUYER" {
 			if err := CheckEntityCompliance(ctx, db, req.AssociatedEntityID, req.Role); err != nil {
 				log.Printf("Entity compliance failed for user %s: %v", req.Email, err)
 				http.Error(w, "Cannot create user: Associated business entity is invalid or non-compliant.", http.StatusForbidden)
 				return
 			}
-		} else if req.Role == models.Admin {
+		} else if req.Role == "ADMIN" {
 			// Admin accounts require human intervention/approval (simulated here by checking a secret key or internal list)
 			if req.Email != "admin@company.com" {
 				// Prevent self-registering as admin
